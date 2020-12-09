@@ -4,7 +4,7 @@
  * @Author: Charles Guo
  * @Date: 2020-12-08 19:46:33
  * @LastEditors: Charles Guo
- * @LastEditTime: 2020-12-09 15:12:07
+ * @LastEditTime: 2020-12-09 15:25:02
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +17,6 @@
 	<body>
 		<div class="container" id="container">
 			<input type="file" id="selectFileInput" />
-			<button id="ieUploadBtn">下载图片</button>
 		</div>
 
 		<script>
@@ -36,7 +35,6 @@
 			}
 
 			function selectFile() {
-				console.log(selectInput);
 				var file = selectInput.files[0]; // 获取到文件
 				fileName = file.name;
 				fileType = file.name.split(".")[1];
