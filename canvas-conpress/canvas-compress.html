@@ -1,0 +1,134 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Charles Guo
+ * @Date: 2020-12-08 19:46:33
+ * @LastEditors: Charles Guo
+ * @LastEditTime: 2020-12-09 15:12:07
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>利用canvas压缩图片</title>
+	</head>
+	<body>
+		<div class="container" id="container">
+			<input type="file" id="selectFileInput" />
+			<button id="ieUploadBtn">下载图片</button>
+		</div>
+
+		<script>
+			var fileName = "",
+				fileType = "",
+				compressImgFile = "";
+
+			var conDiv = document.getElementById("container"),
+				selectInput = document.getElementById("selectFileInput"),
+				ieUploadBtn = document.getElementById("ieUploadBtn");
+
+			if (window.addEventListener) {
+				selectInput.addEventListener("change", selectFile, false);
+			} else if (window.attachEvent) {
+				selectInput.attachEvent("onchange", selectFile);
+			}
+
+			function selectFile() {
+				console.log(selectInput);
+				var file = selectInput.files[0]; // 获取到文件
+				fileName = file.name;
+				fileType = file.name.split(".")[1];
+				compressImg(file);
+			}
+
+			// 压缩函数
+			function compressImg(file) {
+				var reader = new FileReader();
+
+				reader.readAsDataURL(file);
+
+				reader.onload = function (e) {
+					var image = new Image();
+
+					image.src = reader.result;
+					image.onload = function (e) {
+						var canvas = document.createElement("canvas");
+						var context = canvas.getContext("2d");
+
+						var imageWidth = image.width;
+						var imageHeight = image.height;
+
+						canvas.width = imageWidth * 0.1;
+						canvas.height = imageHeight * 0.1;
+
+						context.drawImage(image, 0, 0, imageWidth * 0.1, imageHeight * 0.1);
+						// 将压缩后的图片保存起来 base64格式
+						compressImgFile = canvas.toDataURL("image/" + fileType);
+						// 因为ie等浏览器不支持canvas的toBlob方法，所以这个行不通，如果可以不支持ie就可以用这个方法。
+						// 在这里我们先把base64转成blob对象，使用new Blob构造函数
+						// 语法为：new Blob( array, options );
+						// array 是一个由ArrayBuffer, ArrayBufferView, Blob, DOMString 等对象构成的 Array ，或者其他类似对象的混合体，它将会被放进 Blob。DOMStrings会被编码为UTF-8。
+						/*  options 是一个可选的BlobPropertyBag字典，它可能会指定如下两个属性： type，默认值为 ""，它代表了将会被放入到blob中的数组内容的MIME类型。 endings，默认值为"transparent"，用于指定包含行结束符\n的字符串如何被写入。 它是以下两个值中的一个： "native"，代表行结束符会被更改为适合宿主操作系统文件系统的换行符，或者 "transparent"，代表会保持blob中保存的结束符不变  */
+                        // ArrayBuffer对象用来表示通用的、固定长度的原始二进制数据缓冲区。一般用是通过类型数组对象或 DataView 对象来操作
+                        // ArrayBufferView对象描述了一个底层的二进制数据缓冲区（binary data buffer）的一个类数组视图（view）即是 TypeArray, TypeArray的值有以下描述：
+
+                        /* 
+                            Int8Array(); 
+                            Uint8Array(); 
+                            Uint8ClampedArray();
+                            Int16Array(); 
+                            Uint16Array();
+                            Int32Array(); 
+                            Uint32Array(); 
+                            Float32Array(); 
+                            Float64Array();
+                         */
+
+                         // 这里我们采用类型数组的方式
+                         
+						// canvas.toBlob(function(e) {
+						//     compressImgFile = URL.createObjectURL(e);
+						//     downloadImg()
+						// }, 'image/' + fileType)
+						conDiv.appendChild(canvas);
+                        downloadImg();
+					};
+				};
+			}
+
+			function downloadImg() {
+				var parts = compressImgFile.split(';base64,');
+				var contentType = parts[0].split(':')[1];
+                // base-64 解码使用方法是 atob()。
+                // 相应的编码方法为btoa()
+				var raw = window.atob(parts[1]);
+				var rawLength = raw.length;
+                // uInt8Array是一个长度为length的类数组每个值都是0
+				var uInt8Array = new Uint8Array(rawLength);
+
+				for(var i = 0; i < rawLength; ++i) {
+                    //charCodeAt 方法返回 0 到 65535 之间的整数，表示给定索引处的 UTF-16 代码单元
+				    uInt8Array[i] = raw.charCodeAt(i);
+				};
+
+				var blob = new Blob([uInt8Array], {type: contentType});
+                // 静态方法会创建一个 DOMString。
+                // 只接受 File 对象、Blob 对象或者 MediaSource 对象
+				compressImgFile = URL.createObjectURL(blob);
+
+                // ie是不能通过a标签的形式下载的，我们就采用window.navigator.msSaveOrOpenBlob方法来下载
+
+                if (window.navigator.msSaveOrOpenBlob) {
+                    window.navigator.msSaveOrOpenBlob(blob, fileName);
+                } else {
+                    var a = document.createElement("a");
+                    a.href = compressImgFile;
+                    a.setAttribute("download", fileName);
+                    a.click();
+                }
+			}
+		</script>
+	</body>
+</html>
