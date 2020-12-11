@@ -4,7 +4,7 @@
  * @Author: Charles Guo
  * @Date: 2020-12-10 14:26:21
  * @LastEditors: Charles Guo
- * @LastEditTime: 2020-12-11 23:17:02
+ * @LastEditTime: 2020-12-11 23:41:48
 -->
 # 手撸一个图片放大镜效果
 
@@ -19,3 +19,7 @@
 支持非1：1比例显示放大
 
 支持放大倍数修改，遮罩层颜色及透明度和大小修改，可以封装成vue组件。
+
+效果图展示： 
+
+![](https://cdn.jsdelivr.net/gh/CharlesGC/CDN-latest/image/img-maginifer.gif)
