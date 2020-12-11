@@ -1,0 +1,129 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Charles Guo
+ * @Date: 2020-12-10 14:26:30
+ * @LastEditors: Charles Guo
+ * @LastEditTime: 2020-12-11 23:17:39
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>image-magnifier</title>
+		<style>
+            body{
+                position: relative;
+            }
+			.letter-img {
+				width: 493px;
+				height: 533px;
+				border: 1px solid #ccc;
+				position: absolute;
+                top: 180px;
+                left: 120px;
+                line-height: 533px;
+                cursor: move;
+                box-sizing: border-box;
+                text-align: center;
+			}
+
+			.letter-img > img {
+				max-width: 100%;
+				max-height: 100%;
+                vertical-align: middle;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="originImgBox" class="letter-img">
+			<img id="originImg" src="./img2.jpg" alt="img" />
+        </div>
+	</body>
+
+	<script>
+		window.onload = function () {
+            let maskX, maskY; // 遮罩层位置
+            let moveX, moveY; // 大图移动位置
+		    const box = document.getElementById('originImgBox'),
+		          orgImg = document.getElementById('originImg');
+
+		    box.addEventListener('mouseenter', initMagnifier, false);
+		    box.addEventListener('mousemove', setMagnifierPos, false)
+            box.addEventListener('mouseleave', removeMagnifier, false);
+            
+            const mask = document.createElement('div'); // 遮罩层
+            const maginiferLayer = document.createElement('div'); // 放大区域
+            const maginiferBox = document.createElement('div')
+            const bigImg = document.createElement('img');
+
+            function getBoxStyle () {
+                const {height: boxH, width: boxW, x: boxX, y: boxY} = box.getBoundingClientRect()
+                return {
+                    boxH,boxW,boxX,boxY
+                }
+            }
+
+		    function initMagnifier() {
+                const {boxH, boxW, boxX, boxY} = getBoxStyle();
+                mask.setAttribute('style',"position: absolute;width: 150px;height: 150px;background: 50% top no-repeat #fede4f;opacity: 0.5;")
+                maginiferLayer.setAttribute('style', `border: 1px solid #ccc;position: absolute;width: ${boxW}px;height: ${boxH}px;box-sizing: border-box;left: ${boxW + boxX - 8}px; top: ${boxY - 8}px;overflow: hidden`)
+                box.appendChild(mask)
+                document.body.appendChild(maginiferLayer)
+                setBigImg()
+		    };
+
+		    function setMagnifierPos(e) {
+                // 获取鼠标位置
+                const eClientX = e.clientX,
+                      eClientY = e.clientY;
+                const {boxH, boxW, boxX, boxY} = getBoxStyle();
+
+		        // 鼠标进入就是放大镜的中心位置，所以算出左上角的位置定位
+                maskX = (eClientX -  (mask.clientWidth / 2)) - boxX;
+                maskY = (eClientY - (mask.clientHeight / 2)) - boxY;
+                
+                // 碰撞检测
+                maskY = maskY < 0 ? 0 : maskY; 
+                maskX = maskX < 0 ? 0 : maskX; 
+
+                if (maskX + mask.clientWidth >= boxW) {
+                    maskX = boxW - mask.clientWidth
+                }
+
+                if (maskY + mask.clientHeight >= boxH) {
+                    maskY = boxH - mask.clientHeight
+                }
+
+                mask.style.left = maskX + 'px';
+                mask.style.top = maskY + 'px';
+
+                moveX = - maskX * 4
+                moveY = - maskY * 4
+
+                maginiferBox.setAttribute('style', `position: absolute;text-align: center;width: ${boxW * 4}px; height: ${boxH * 4}px;top: ${moveY}px; left: ${moveX}px; line-height: ${boxH * 4}px`)
+		    };
+
+		    function removeMagnifier() {
+                box.removeChild(mask)
+                maginiferLayer.removeChild(maginiferBox)  
+		        document.body.removeChild(maginiferLayer)
+            };
+            
+            function setBigImg() {
+                const {boxH, boxW, boxX, boxY} = getBoxStyle();
+                const {height, width} = orgImg.getBoundingClientRect()
+                bigImg.src = './img2.jpg'
+                bigImg.setAttribute('style', `width: ${width * 4}px; height: ${height * 4}px;max-width: 100%; max-height: 100%;vertical-align: middle;`)
+                maginiferBox.appendChild(bigImg)
+                maginiferLayer.appendChild(maginiferBox)
+            }
+            // to do use Contructor
+		    function Magnifier(){};
+
+		    Magnifier.prototype.init = function () {}
+		}
+	</script>
+</html>
