@@ -1,0 +1,101 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Charles Guo
+ * @Date: 2020-12-13 13:59:58
+ * @LastEditors: Charles Guo
+ * @LastEditTime: 2020-12-13 14:10:07
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>image-lazyload</title>
+		<style>
+			.my-photo {
+				width: 600px;
+				height: 900px;
+                display: block;
+			}
+			.my-photo img {
+				max-width: 100%;
+				max-height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+			<img class="my-photo" alt="" data-src="./img.jpg" />
+		</div>
+
+		<script>
+			window.onload = function () {
+				window.onscroll = () => {
+					checkImgs();
+				};
+				function checkImgs(el) {
+					const imgs = document.querySelectorAll(".my-photo");
+					Array.from(imgs).forEach((el) => {
+						// 在这里更换不同的方法即可
+						insertObserve(el)
+					});
+				}
+				function loadImg(el) {
+					if (!el.src) {
+						const source = el.dataset.src;
+						el.src = source;
+					}
+				}
+
+				function insertObserve(el) {
+					io.observe(el);
+				}
+				// 定义一个交叉观察期
+				const io = new IntersectionObserver((ioes) => {
+					ioes.forEach((ioe) => {
+						const el = ioe.target;
+						const intersectionRatio = ioe.intersectionRatio;
+						if (intersectionRatio > 0 && intersectionRatio <= 1) {
+							loadImg(el);
+							io.unobserve(el);
+						}
+						el.onload = el.onerror = () => io.unobserve(el);
+					});
+				});
+			};
+		</script>
+	</body>
+</html>

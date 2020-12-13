@@ -1,0 +1,70 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: Charles Guo
+ * @Date: 2020-12-13 12:20:34
+ * @LastEditors: Charles Guo
+ * @LastEditTime: 2020-12-13 13:06:56
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间分片测试</title>
+</head>
+<body>
+    <ul id="container"></ul>
+
+    <script>
+        let ul = document.getElementById('container');
+        // 测试数据
+        let count = 10000, once = 20, page = count / once,index = 0;
+
+        function loop(total, index) {
+            if (total <= 0) {
+                console.timeEnd('start')
+                return false
+            }
+            let pageCount = Math.min(total, once);
+
+            // setTimeout(function() {
+            //     for (let i = 0; i < pageCount; i++) {
+            //         let li = document.createElement('li');
+            //         li.innerText = index + i + ':' + ~~(Math.random() * total)
+            //         ul.appendChild(li)
+            //     }
+
+            //     loop(total - pageCount, index + pageCount)
+            // },0)
+
+            // window.requestAnimationFrame(function() {
+            //     for (let i = 0; i < pageCount; i++) {
+            //         let li = document.createElement('li');
+            //         li.innerText = index + i + ':' + ~~(Math.random() * total)
+            //         ul.appendChild(li)
+            //     }
+
+            //     loop(total - pageCount, index + pageCount)
+            // })
+
+            window.requestAnimationFrame(function() {
+                let fragment = document.createDocumentFragment();
+                for (let i = 0; i < pageCount; i++) {
+                    let li = document.createElement('li');
+                    li.innerText = index + i + ':' + ~~(Math.random() * total)
+                    fragment.appendChild(li);
+                }
+                ul.appendChild(fragment)
+                loop(total - pageCount, index + pageCount)
+            })
+        }
+
+        window.onload = function () {
+            console.time('start')
+            loop(count, index)
+        }
+    </script>
+    
+</body>
+</html>
