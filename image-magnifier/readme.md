@@ -4,7 +4,7 @@
  * @Author: Charles Guo
  * @Date: 2020-12-10 14:26:21
  * @LastEditors: Charles Guo
- * @LastEditTime: 2020-12-11 23:41:48
+ * @LastEditTime: 2020-12-13 00:32:58
 -->
 # 手撸一个图片放大镜效果
 
@@ -22,4 +22,4 @@
 
 效果图展示： 
 
-![](https://cdn.jsdelivr.net/gh/CharlesGC/CDN-latest/image/img-maginifer.gif)
+![](https://github.com/CharlesGC/CDN-latest/raw/master/image/img-maginifer.gif)

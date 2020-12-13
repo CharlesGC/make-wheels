@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS-tooltip</title>
+    <style>
+        body{
+            margin: 0;
+        }
+        main{
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        main div{
+            color: #353539;
+            text-align: center;
+            font-size: 16px;
+        }
+        main div span{
+            padding: .5em 1em;
+            margin: 0.5em;
+            display: inline-block;
+            background-color: #dedede;
+        }
+        [tooltip]{
+            position: relative;
+        }
+        [tooltip]::after,[tooltip]::before{
+            user-select: none;
+            display: none;
+            opacity: 0;
+            line-height: 1;
+            position: absolute;
+            text-transform: none;
+        }
+        /* before 我们来做一个三角形 */
+        [tooltip]::before{
+            content: '';
+            border: 5px solid transparent;
+            z-index: 1001;
+        }
+        /* after 我们显示文字信息 */
+        [tooltip]::after{
+            content: attr(tooltip);
+            text-align: center;
+            min-width: 3em;
+            max-width: 21em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 1em 1.5em;
+            border-radius: .3em;
+            box-shadow: 0 1em 2em -.5em rgba(0, 0, 0, 0.35);
+            background: #333;
+            color: #fff;
+            z-index: 1000;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+        /* hover的时候显示 */
+        [tooltip]:hover::before,
+        [tooltip]:hover::after {
+            display: block;
+        }
+        /* 无信息的时候不显示 */
+        [tooltip='']::before,
+        [tooltip='']::after {
+            display: none !important;
+        }
+        /* 显示top */
+        [tooltip][flow="top"]::before{
+            bottom: 100%;
+            border-bottom-width: 0;
+            border-top-color: #333;
+        }
+        [tooltip][flow="top"]::after {
+            bottom: calc(100% + 5px);
+        }
+        [tooltip][flow="top"]::after,[tooltip][flow="top"]::before{
+            left: 50%;
+            transform: translate(-50%, 5px);
+        }
+        /* 显示right */
+        [tooltip][flow="right"]::before{
+            left: 100%;
+            border-left-width: 0;
+            border-right-color: #333;
+        }
+        [tooltip][flow="right"]::after {
+            left: calc(100% + 5px);
+        }
+        [tooltip][flow="right"]::after,[tooltip][flow="right"]::before{
+            top: 50%;
+            transform: translate(5px, -50%);
+        }
+        /* 显示down */
+        [tooltip][flow="down"]::before{
+            top: 100%;
+            border-top-width: 0;
+            border-bottom-color: #333;
+        }
+        [tooltip][flow="down"]::after {
+            top: calc(100% + 5px);
+        }
+        [tooltip][flow="down"]::after,[tooltip][flow="down"]::before{
+            left: 50%;
+            transform: translate(-50%, 5px);
+        }
+        /* 显示left */
+        [tooltip][flow="left"]::before{
+            right: 100%;
+            border-right-width: 0;
+            border-left-color: #333;
+        }
+        [tooltip][flow="left"]::after{
+            right: calc(100% + 5px);
+        }
+        [tooltip][flow="left"]::after,[tooltip][flow="left"]::before{
+            top: 50%;
+            transform: translate(5px, -50%);
+        }
+        /* 加入动画  垂直方向*/
+        @keyframes tooltips-vert {
+            to {
+                opacity: .9;
+                transform: translate(-50%, 0);
+            }
+        }
+        /* 加入动画  水平方向*/
+        @keyframes tooltips-horz {
+            to {
+                opacity: .9;
+                transform: translate(0, -50%);
+            }
+        }
+        
+        [tooltip][flow^="top"]:hover::before,
+        [tooltip][flow^="top"]:hover::after,
+        [tooltip][flow^="down"]:hover::before,
+        [tooltip][flow^="down"]:hover::after {
+            animation: tooltips-vert 300ms ease-out forwards;
+        }
+        [tooltip][flow^="left"]:hover::before,
+        [tooltip][flow^="left"]:hover::after,
+        [tooltip][flow^="right"]:hover::before,
+        [tooltip][flow^="right"]:hover::after {
+            animation: tooltips-horz 300ms ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <main class="main">
+        <div>
+            <span tooltip="I'm up above it!" flow="top">Up</span>
+        </div>
+        <div>
+            <span tooltip="Slide to the left" flow="left">Left</span>
+            <span tooltip="Slide to the right" flow="right">Right</span>
+        </div>
+        <div>
+            <span tooltip="Get Down." flow="down">Down</span>
+        </div>
+    </main>
+</body>
+</html>
